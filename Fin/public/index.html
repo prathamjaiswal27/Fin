@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-wallet"></i> Expense Tracker</h1>
+                <p class="user-name">Welcome, <span id="userName">User</span>!</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="transactions">
+                    <i class="fas fa-list"></i> Transactions
+                </a>
+                <a href="#" class="nav-item" data-page="add-transaction">
+                    <i class="fas fa-plus-circle"></i> Add Transaction
+                </a>
+                <a href="#" class="nav-item" data-page="accounts">
+                    <i class="fas fa-university"></i> Accounts
+                </a>
+                <a href="#" class="nav-item" data-page="categories">
+                    <i class="fas fa-tags"></i> Categories
+                </a>
+                <a href="#" class="nav-item" data-page="analytics">
+                    <i class="fas fa-chart-pie"></i> Analytics
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <h2 class="page-title">📊 Dashboard</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon balance"><i class="fas fa-wallet"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Total Balance</p>
+                            <p class="metric-value" id="totalBalance">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon income"><i class="fas fa-arrow-up"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Monthly Income</p>
+                            <p class="metric-value" id="monthlyIncome">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon expense"><i class="fas fa-arrow-down"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Monthly Expenses</p>
+                            <p class="metric-value" id="monthlyExpense">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon net"><i class="fas fa-chart-line"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Net This Month</p>
+                            <p class="metric-value" id="netMonth">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Spending by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Account Balances</h3>
+                        <canvas id="accountChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Recent Transactions</h3>
+                    <div id="recentTransactions" class="transactions-list"></div>
+                </div>
+            </div>
+
+            <!-- Transactions Page -->
+            <div id="transactions-page" class="page">
+                <h2 class="page-title">📝 Transactions</h2>
+                
+                <div class="filters">
+                    <select id="txnTypeFilter" class="filter-select">
+                        <option value="all">All Types</option>
+                        <option value="expense">Expenses</option>
+                        <option value="income">Income</option>
+                        <option value="transfer">Transfers</option>
+                    </select>
+                </div>
+
+                <div class="card">
+                    <div id="transactionsList" class="transactions-list"></div>
+                </div>
+            </div>
+
+            <!-- Add Transaction Page -->
+            <div id="add-transaction-page" class="page">
+                <h2 class="page-title">➕ Add Transaction</h2>
+                
+                <div class="card">
+                    <form id="addTransactionForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="txnType">Type</label>
+                                <select id="txnType" required>
+                                    <option value="expense">Expense</option>
+                                    <option value="income">Income</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Amount (₹)</label>
+                                <input type="number" id="amount" step="0.01" min="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="account">Account</label>
+                                <select id="account" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="txnDate">Date</label>
+                                <input type="date" id="txnDate" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="merchant">Merchant</label>
+                                <select id="merchant"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Transaction
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Accounts Page -->
+            <div id="accounts-page" class="page">
+                <h2 class="page-title">🏦 Accounts</h2>
+                
+                <div id="accountsList" class="accounts-grid"></div>
+
+                <div class="card">
+                    <h3>Add New Account</h3>
+                    <form id="addAccountForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="accountName">Account Name</label>
+                                <input type="text" id="accountName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="accountType">Type</label>
+                                <select id="accountType" required>
+                                    <option value="checking">Checking</option>
+                                    <option value="savings">Savings</option>
+                                    <option value="credit_card">Credit Card</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="investment">Investment</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="initialBalance">Initial Balance (₹)</label>
+                                <input type="number" id="initialBalance" step="0.01" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="currency">Currency</label>
+                                <input type="text" id="currency" value="INR" readonly>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Categories Page -->
+            <div id="categories-page" class="page">
+                <h2 class="page-title">📂 Categories</h2>
+                
+                <div class="categories-grid">
+                    <div class="card">
+                        <h3>Expense Categories</h3>
+                        <div id="expenseCategories" class="category-list"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Income Categories</h3>
+                        <div id="incomeCategories" class="category-list"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Add New Category</h3>
+                    <form id="addCategoryForm" class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="categoryName">Category Name</label>
+                                <input type="text" id="categoryName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="categoryKind">Type</label>
+                                <select id="categoryKind" required>
+                                    <option value="expense">Expense</option>
+                                    <option value="income">Income</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="analytics-page" class="page">
+                <h2 class="page-title">📈 Analytics</h2>
+                
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <button id="applyDateFilter" class="btn btn-secondary">Apply</button>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon income"><i class="fas fa-arrow-up"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Total Income</p>
+                            <p class="metric-value" id="analyticsIncome">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon expense"><i class="fas fa-arrow-down"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Total Expenses</p>
+                            <p class="metric-value" id="analyticsExpense">$0.00</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon net"><i class="fas fa-equals"></i></div>
+                        <div class="metric-content">
+                            <p class="metric-label">Net</p>
+                            <p class="metric-value" id="analyticsNet">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Spending by Category</h3>
+                        <canvas id="analyticsCategoryChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Daily Spending Trend</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Top Merchants</h3>
+                    <div id="topMerchants" class="merchants-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
